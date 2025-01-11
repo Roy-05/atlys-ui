@@ -11,6 +11,12 @@ export default {
     theme: {
         extend: {
             colors,
+            fontSize: {
+                '2xs': ['0.625rem', '0.75rem']
+            },
+            lineHeight: {
+                '3.5': '0.875rem'
+            },
             boxShadow: {
                 DEFAULT: '0px 0px 6px 0px #0000000D'
             }
