@@ -4,7 +4,7 @@ import { XStack, YStack } from '@/design-system/layout';
 import { B4, H5 } from '@/design-system/typography';
 import { VALID_EQ_REG_EXP } from '@/utils/constants';
 
-export const FunctionCard = ({ index, set }) => {
+export const FunctionCard = ({ index, updateCardEquation }) => {
     const validateInput = (evt) => {
         if (!evt.target.value.includes('x')) {
             console.log('expression does not contain x');
@@ -14,11 +14,17 @@ export const FunctionCard = ({ index, set }) => {
         let regex = new RegExp(VALID_EQ_REG_EXP);
 
         if (evt.target.value.match(regex)) {
-            set((prev) => {
-                let a = [...prev];
-                a[index] = evt.target.value;
-                return a;
+            updateCardEquation({
+                payload: {
+                    index,
+                    value: evt.target.value
+                }
             });
+            // set((prev) => {
+            //     let a = [...prev];
+            //     a[index] = evt.target.value;
+            //     return a;
+            // });
             let str = evt.target.value.replaceAll('x', 10);
         } else {
             console.log('Not a valid expression');
