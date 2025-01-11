@@ -25,4 +25,4 @@ export const colors = {
             50: '#C5F2DA'
         }
     }
-};
+} as const;
