@@ -1,19 +1,18 @@
 'use client';
 
-import { XStack, YStack } from '@/design-system/layout';
+import { XStack } from '@/design-system/layout';
 import { FunctionCard } from './widgets/functionCard';
 import { Input } from '@/design-system/input';
-import { SH2 } from '@/design-system/typography';
-import { useFunction } from '@/hooks/useFunction';
+import { useFunctionCards } from '@/hooks/useFunctionCards';
 import { SvgChainPath } from './widgets/svg/SvgChainPath';
 import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
 import { useEffect, useRef } from 'react';
 import { getElementPosition } from '@/utils/utils';
-import { FUNC_CARD_ACTION_TYPES } from './actions/FunctionCardsActionTypes';
+import { FUNC_CARD_ACTION_TYPES } from './actions/functionCardsActionTypes';
 
 export default function Home() {
-    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunction();
+    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunctionCards();
     const { outputValue } = state;
 
     const inputNodeRef = useRef<SVGSVGElement>(null);
@@ -34,7 +33,16 @@ export default function Home() {
             const outNode = getElementPosition({ node: inputNode });
             const inNode = getElementPosition({ node: outputNode });
 
-            setTertiaryNodeCoords([{ outNode }, { inNode }]);
+            setTertiaryNodeCoords([
+                {
+                    inNode: null,
+                    outNode
+                },
+                {
+                    inNode,
+                    outNode: null
+                }
+            ]);
         }
     };
 
@@ -55,8 +63,8 @@ export default function Home() {
                     onBlur={_updateInitialValue}
                 />
             </XStack>
-            <XStack className='flex-wrap justify-evenly gap-y-12 gap-x-8 mx-4'>
-                {state.data.map((item, index) => (
+            <XStack className='flex-wrap justify-center gap-20'>
+                {state.data.map((item, index: number) => (
                     <FunctionCard
                         item={item}
                         key={index}
@@ -66,7 +74,7 @@ export default function Home() {
                     />
                 ))}
                 <svg className='absolute top-0 left-0 w-full h-full pointer-events-none'>
-                    {state?.chainPaths?.map((path, index) => (
+                    {state?.chainPaths?.map((path: string, index: number) => (
                         <SvgChainPath key={index} d={path} />
                     ))}
                 </svg>

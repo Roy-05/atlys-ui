@@ -41,12 +41,12 @@ class LinkedList<T> {
         }
     }
 
-    getNextIndices(): Array<T> {
+    getNextIndices(): Array<T | null> {
         let current = this.head;
-        let list: Array<T> = [];
+        let list: Array<T | null> = [];
 
         while (current) {
-            list[current.data as number] = current.next?.data;
+            list[current.data as number] = current.next?.data ?? null;
             current = current.next;
         }
 
@@ -66,4 +66,4 @@ class LinkedList<T> {
     }
 }
 
-export const FunctionList = new LinkedList();
+export const FunctionList = new LinkedList<number>();

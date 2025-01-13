@@ -1,3 +1,5 @@
+import { ChainNode, Coords, FunctionCardItem } from '@/types/functionCardTypes';
+
 export const getElementPosition = ({ node }: { node: Element & HTMLOrSVGElement }): [number, number] => {
     const rect1 = node.getBoundingClientRect();
 
@@ -7,7 +9,19 @@ export const getElementPosition = ({ node }: { node: Element & HTMLOrSVGElement 
     return [x1, y1];
 };
 
-const getControlPoints = (midX, midY, { vertexHeight, angle, dir = 1 }) => {
+const getControlPoints = (
+    midX: number,
+    midY: number,
+    {
+        vertexHeight,
+        angle,
+        dir = 1
+    }: {
+        vertexHeight: number;
+        angle: number;
+        dir: 1 | -1;
+    }
+) => {
     const offsetX = vertexHeight * Math.cos(angle + (Math.PI / 2) * dir);
     const offsetY = vertexHeight * Math.sin(angle + (Math.PI / 2) * dir);
 
@@ -17,7 +31,7 @@ const getControlPoints = (midX, midY, { vertexHeight, angle, dir = 1 }) => {
     return [controlX, controlY];
 };
 
-export const generateCurvedPath = (start, end) => {
+const generateCurvedPath = (start: Coords, end: Coords) => {
     const startX = start[0];
     const startY = start[1];
     const endX = end[0];
@@ -42,7 +56,7 @@ export const generateCurvedPath = (start, end) => {
         const firstMidY = (startY + midpointY) / 2;
 
         const [controlX1, controlY1] = getControlPoints(firstMidX, firstMidY, {
-            vertexHeight: vertexHeight / 2,
+            vertexHeight: vertexHeight / 3,
             angle,
             dir: -1
         });
@@ -51,7 +65,7 @@ export const generateCurvedPath = (start, end) => {
         const secondMidY = (midpointY + endY) / 2;
 
         const [controlX2, controlY2] = getControlPoints(secondMidX, secondMidY, {
-            vertexHeight: vertexHeight / 2,
+            vertexHeight: vertexHeight / 3,
             angle,
             dir: 1
         });
@@ -67,4 +81,60 @@ export const generateCurvedPath = (start, end) => {
 
         return `M${startX} ${startY} Q${controlX} ${controlY} ${endX} ${endY}`;
     }
+};
+
+export const getPathsForNodes = ({
+    traversalOrder,
+    nodes
+}: {
+    traversalOrder: Array<number>;
+    nodes: Array<ChainNode>;
+}) => {
+    let chainPaths = [];
+
+    // adding two indexes for entry and exit nodes
+    traversalOrder = [0, ...traversalOrder.map((i: number) => i + 1), traversalOrder.length + 1];
+
+    for (let i = 0; i < nodes.length - 1; i++) {
+        const currentIndex = traversalOrder[i];
+        const nextIndex = traversalOrder[i + 1];
+
+        const start = nodes[currentIndex].outNode;
+        const end = nodes[nextIndex].inNode;
+
+        if (start && end) {
+            const path = generateCurvedPath(start, end);
+
+            chainPaths.push(path);
+        }
+    }
+
+    return chainPaths;
+};
+
+export const computeFunctionChain = ({
+    traversalOrder,
+    data,
+    initialValue
+}: {
+    traversalOrder: Array<number>;
+    data: Array<FunctionCardItem>;
+    initialValue: number;
+}) => {
+    let output = initialValue;
+
+    traversalOrder.forEach((index: number) => {
+        let equation = data[index]['eq'];
+
+        equation = equation
+            .replaceAll(/(\d+)(x)/g, '$1*$2')
+            .replaceAll('^', '**')
+            .replaceAll(/\s+/g, '')
+            .replaceAll('x', output.toString());
+
+        // TODO: Use a postfix tokenization logic instead of using `eval()` here
+        output = eval(equation);
+    });
+
+    return output;
 };

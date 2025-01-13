@@ -60,8 +60,8 @@ export const Input = ({
             <XStack className='items-center'>
                 {Boolean(LeadingComponent) && (
                     <XStack
-                        className={`rounded-r-none rounded-lg  h-full flex items-center ${
-                            variant === 'lg' ? 'rounded-xl px-4 border-2' : 'px-3 rounded-lg border'
+                        className={`bg-neutral-0 rounded-r-none rounded-lg  h-full flex items-center border-2 border-r ${
+                            variant === 'lg' ? 'rounded-xl px-4' : 'px-3 rounded-lg'
                         } ${
                             Boolean(error)
                                 ? 'border-error-100'
@@ -96,8 +96,8 @@ export const Input = ({
                 />
                 {Boolean(TrailingComponent) && (
                     <XStack
-                        className={`rounded-l-none border-neutral-400 h-full flex items-center ${
-                            variant === 'lg' ? 'rounded-xl px-4 border-2' : 'px-3 rounded-lg border'
+                        className={`bg-neutral-0 rounded-l-none border-neutral-400 h-full flex items-center border-2 border-l ${
+                            variant === 'lg' ? 'rounded-xl px-4' : 'px-3 rounded-lg'
                         }  ${
                             Boolean(error)
                                 ? 'border-error-100'

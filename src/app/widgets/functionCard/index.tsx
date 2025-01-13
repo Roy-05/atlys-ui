@@ -1,13 +1,15 @@
 import { Card } from '@/design-system/card';
 import { Input } from '@/design-system/input';
 import { XStack, YStack } from '@/design-system/layout';
-import { B4, H5 } from '@/design-system/typography';
-import { Dispatch, Ref, SetStateAction, useEffect, useRef } from 'react';
-import { SvgChainNode } from '../svg/SvgChainNode';
+import { H5 } from '@/design-system/typography';
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { validateFunctionInput } from './utils';
-import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/FunctionCardsActionTypes';
+import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
+import { getElementPosition } from '@/utils/utils';
+import { ChainingNode } from './ChainingNode';
+import { IFunctionCard } from '@/types/functionCardTypes';
 
-export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }) => {
+export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }: IFunctionCard) => {
     const inputNodeRef = useRef<SVGSVGElement>(null);
     const outputNodeRef = useRef<SVGSVGElement>(null);
 
@@ -25,31 +27,23 @@ export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }) => {
         }
     };
 
-    const connectElements = () => {
+    const _setFnNodeCoords = () => {
         const inputNode = inputNodeRef.current;
         const outputNode = outputNodeRef.current;
 
         if (inputNode && outputNode) {
-            const rect1 = inputNode.getBoundingClientRect();
-            const rect2 = outputNode.getBoundingClientRect();
-
-            const x1 = rect1.left + rect1.width / 2;
-            const y1 = rect1.top + rect1.height / 2;
-            const x2 = rect2.left + rect2.width / 2;
-            const y2 = rect2.top + rect2.height / 2;
-
             setFnNodeCoords({
                 index,
                 value: {
-                    inNode: [x1, y1],
-                    outNode: [x2, y2]
+                    inNode: getElementPosition({ node: inputNode }),
+                    outNode: getElementPosition({ node: outputNode })
                 }
             });
         }
     };
 
     useEffect(() => {
-        connectElements();
+        _setFnNodeCoords();
     }, []);
 
     return (
@@ -59,7 +53,7 @@ export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }) => {
                 <Input validate={validate} label={'Equation:'} />
                 <Input
                     label={'Next function'}
-                    value={item?.next + 1 <= 5 ? `Function: ${item?.next + 1}` : '-'}
+                    value={Boolean(Number(item?.next) + 1) ? `Function: ${Number(item?.next) || 0 + 1}` : '-'}
                     disabled
                 />
                 <XStack className='justify-between mt-6'>
@@ -68,22 +62,5 @@ export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }) => {
                 </XStack>
             </YStack>
         </Card>
-    );
-};
-
-const ChainingNode = ({
-    nodeRef = null,
-    text = '',
-    className = ''
-}: {
-    nodeRef: Ref<SVGSVGElement>;
-    text: string;
-    className?: string;
-}) => {
-    return (
-        <XStack className={`gap-x-1 items-center ${className}`}>
-            <SvgChainNode nodeRef={nodeRef} />
-            <B4>{text}</B4>
-        </XStack>
     );
 };
