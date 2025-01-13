@@ -16,7 +16,7 @@ type Input = {
      * Optional function to validate input on blur
      * @returns boolean value indicating if data is valid
      */
-    validate?: ({ value, onError }: { value: string; onError?: Dispatch<SetStateAction<string>> }) => boolean;
+    validate?: ({ value, onError }: { value: string; onError: Dispatch<SetStateAction<string>> }) => void;
     /**
      * Optional Leading Component on the input field
      */

@@ -8,14 +8,47 @@ import { useFunction } from '@/hooks/use/useFunction';
 import { SvgChainPath } from './widgets/svg/SvgChainPath';
 import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
+import { useEffect, useRef } from 'react';
 
 export default function Home() {
-    const { state, updateCardEquation, updateInitialValue, addCardPos, dispatch } = useFunction();
+    const {
+        state,
+        updateCardEquation,
+        updateInitialValue,
+        addCardPos,
+        dispatch,
+        setFnNodeCoords,
+        setTertiaryNodeCoords
+    } = useFunction();
     const { outputValue } = state;
 
     const _updateInitialValue = (evt) => {
         updateInitialValue({ payload: { value: evt.target.value } });
     };
+
+    const inputNodeRef = useRef<SVGSVGElement>(null);
+    const outputNodeRef = useRef<SVGSVGElement>(null);
+
+    const connectElements = () => {
+        const inputNode = inputNodeRef.current;
+        const outputNode = outputNodeRef.current;
+
+        if (inputNode && outputNode) {
+            const rect1 = inputNode.getBoundingClientRect();
+            const rect2 = outputNode.getBoundingClientRect();
+
+            const x1 = rect1.left + rect1.width / 2;
+            const y1 = rect1.top + rect1.height / 2;
+            const x2 = rect2.left + rect2.width / 2;
+            const y2 = rect2.top + rect2.height / 2;
+
+            setTertiaryNodeCoords([{ end: [x1, y1] }, { start: [x2, y2] }]);
+        }
+    };
+
+    useEffect(() => {
+        connectElements();
+    });
 
     return (
         <XStack className='py-24 px-8 justify-center'>
@@ -26,19 +59,14 @@ export default function Home() {
                     type={'number'}
                     className='w-24'
                     label={<Chip className='bg-decorative-yellow-200'>Initial value of x</Chip>}
-                    TrailingComponent={<SvgChainNode />}
+                    TrailingComponent={<SvgChainNode nodeRef={inputNodeRef} />}
                     onBlur={_updateInitialValue}
                 />
                 <XStack className='self-end'></XStack>
             </XStack>
             <XStack className='flex-wrap justify-around gap-y-20 gap-x-12'>
                 {state.data.map((item, index) => (
-                    <FunctionCard
-                        key={index}
-                        index={index}
-                        updateCardEquation={updateCardEquation}
-                        dispatch={dispatch}
-                    />
+                    <FunctionCard key={index} index={index} updateCardEquation={setFnNodeCoords} dispatch={dispatch} />
                 ))}
                 <svg className='absolute top-0 left-0 w-full h-full pointer-events-none'>
                     {state?.linePaths?.map((path, index) => (
@@ -52,7 +80,7 @@ export default function Home() {
                     variant={'lg'}
                     color={'green'}
                     className='w-24'
-                    LeadingComponent={<SvgChainNode />}
+                    LeadingComponent={<SvgChainNode nodeRef={outputNodeRef} />}
                     label={<Chip className='bg-decorative-green-200'>Final Output y</Chip>}
                     value={outputValue}></Input>
             </XStack>

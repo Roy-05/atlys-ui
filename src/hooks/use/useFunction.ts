@@ -1,5 +1,5 @@
 import { FunctionList } from '@/app/modules/LinkedList';
-import { ActionDispatch, useReducer } from 'react';
+import { ActionDispatch, useReducer, useRef } from 'react';
 
 export const ACTION_TYPES = Object.freeze({
     UPDATE_INITIAL_VALUE: 'UPDATE_INITIAL_VALUE',
@@ -50,23 +50,18 @@ const reducer = (state, action) => {
             };
         }
         case ACTION_TYPES.ADD_CARD_POS: {
-            const { index, value } = payload;
+            const { nodes } = payload;
 
-            let cardPos = [...state.cardPos];
-            cardPos[index] = value;
+            // let cardPos = [...state.cardPos];
+            // cardPos[index] = value;
 
             const traversalOrder = FunctionList.getTraversalOrder();
-            let linePaths = [];
+            let linePaths = generateCurvedPaths({ traversalOrder, cardPos: nodes });
 
-            if (cardPos.indexOf(undefined) === -1) {
-                linePaths = generateCurvedPaths({ traversalOrder, cardPos });
-            }
-
-            console.log(traversalOrder, linePaths, cardPos);
+            // console.log(traversalOrder, linePaths, cardPos);
 
             return {
                 ...state,
-                cardPos,
                 linePaths
             };
         }
@@ -85,16 +80,6 @@ const init = () => {
         linePaths: [],
         data: [...new Array(5)]
     };
-};
-
-const updatedLinePaths = ({ traversalOrder, cardPos }) => {
-    return traversalOrder.map((currentIndex, idx) => {
-        const nextIndex = traversalOrder[idx + 1]; // Get the next index in the traversal order
-        return {
-            in: cardPos[currentIndex].out,
-            out: nextIndex !== undefined ? cardPos[nextIndex].in : null // If there's no next index, set end to null
-        };
-    });
 };
 
 const generateCurvedPaths = ({ traversalOrder, cardPos }) => {
@@ -138,9 +123,6 @@ const compute = ({ traverseOrder, data, initialValue }) => {
 };
 
 export const useFunction = () => {
-    let validInputs = 0;
-    let output = 0;
-
     const [state, dispatch] = useReducer(
         reducer,
         {
@@ -152,6 +134,46 @@ export const useFunction = () => {
         init
     );
 
+    const fnNodeCoords = useRef([]);
+    const tertiaryNodeCoords = useRef([]);
+
+    const setTertiaryNodeCoords = (value) => {
+        let _fnNodeCoords = fnNodeCoords.current;
+
+        tertiaryNodeCoords.current = value;
+
+        console.log(tertiaryNodeCoords.current);
+
+        // if (_fnNodeCoords.indexOf(undefined) === -1) {
+        //     dispatch({
+        //         type: ACTION_TYPES.ADD_CARD_POS,
+        //         payload: {
+        //             nodes: _fnNodeCoords
+        //         }
+        //     });
+        // }
+    };
+
+    const setFnNodeCoords = ({ index, value }) => {
+        let _fnNodeCoords = fnNodeCoords.current;
+        let _tertiaryNodeCoords = tertiaryNodeCoords.current;
+
+        _fnNodeCoords[index] = value;
+
+        fnNodeCoords.current = _fnNodeCoords;
+
+        console.log(fnNodeCoords.current);
+
+        if (_fnNodeCoords.indexOf(undefined) === -1) {
+            dispatch({
+                type: ACTION_TYPES.ADD_CARD_POS,
+                payload: {
+                    nodes: _fnNodeCoords
+                }
+            });
+        }
+    };
+
     const updateCardEquation = ({ payload = {} }: { payload: Record<string, string | number> }) =>
         dispatch({ type: ACTION_TYPES.UPDATE_CARD_EQ, payload });
 
@@ -161,5 +183,13 @@ export const useFunction = () => {
     const addCardPos = ({ payload = {} }: { payload: Record<string, string | number> }) =>
         dispatch({ type: ACTION_TYPES.ADD_CARD_POS, payload });
 
-    return { state, updateCardEquation, updateInitialValue, addCardPos, dispatch };
+    return {
+        state,
+        updateCardEquation,
+        updateInitialValue,
+        addCardPos,
+        dispatch,
+        setFnNodeCoords,
+        setTertiaryNodeCoords
+    };
 };
