@@ -1,4 +1,4 @@
-import { colors } from './src/utils/colors';
+import { colors } from './src/app/utils/colors';
 import type { Config } from 'tailwindcss';
 
 export default {

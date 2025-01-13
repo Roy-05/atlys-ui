@@ -1,4 +1,4 @@
-import { colors } from '@/utils/colors';
+import { colors } from '@/app/utils/colors';
 import { Ref } from 'react';
 
 export const SvgChainNode = ({ nodeRef }: { nodeRef?: Ref<SVGSVGElement> }) => (

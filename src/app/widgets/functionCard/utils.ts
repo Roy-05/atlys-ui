@@ -1,4 +1,4 @@
-import { VALID_EQ_REG_EXP } from '@/utils/constants';
+import { VALID_EQ_REG_EXP } from '@/app/utils/constants';
 import { Dispatch, SetStateAction } from 'react';
 
 export const validateFunctionInput = ({

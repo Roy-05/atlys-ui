@@ -1,4 +1,4 @@
-import { ChainNode, Coords, FunctionCardItem } from '@/types/functionCardTypes';
+import { ChainNode, Coords, FunctionCardItem } from '@/app/types/functionCardTypes';
 
 export const getElementPosition = ({ node }: { node: Element & HTMLOrSVGElement }): [number, number] => {
     const rect1 = node.getBoundingClientRect();

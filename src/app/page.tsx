@@ -3,12 +3,12 @@
 import { XStack } from '@/design-system/layout';
 import { FunctionCard } from './widgets/functionCard';
 import { Input } from '@/design-system/input';
-import { useFunctionCards } from '@/hooks/useFunctionCards';
+import { useFunctionCards } from '@/app/hooks/useFunctionCards';
 import { SvgChainPath } from './widgets/svg/SvgChainPath';
 import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
 import { useEffect, useRef } from 'react';
-import { getElementPosition } from '@/utils/utils';
+import { getElementPosition } from '@/app/utils/utils';
 import { FUNC_CARD_ACTION_TYPES } from './actions/functionCardsActionTypes';
 
 export default function Home() {

@@ -1,4 +1,4 @@
-import { colors } from '@/utils/colors';
+import { colors } from '@/app/utils/colors';
 import { JSX } from 'react';
 
 export const SvgChainPath = ({ ...props }: JSX.IntrinsicElements['path']) => {

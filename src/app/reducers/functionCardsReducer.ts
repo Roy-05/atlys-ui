@@ -1,7 +1,11 @@
-import { computeFunctionChain, getPathsForNodes } from '@/utils/utils';
+import { computeFunctionChain, getPathsForNodes } from '@/app/utils/utils';
 import { FUNC_CARD_ACTION_TYPES } from '../actions/functionCardsActionTypes';
 import { FunctionList } from '../modules/LinkedList';
-import { FunctionCardItem, IFunctionCardsReducerAction, IFunctionCardsReducerState } from '@/types/functionCardTypes';
+import {
+    FunctionCardItem,
+    IFunctionCardsReducerAction,
+    IFunctionCardsReducerState
+} from '@/app/types/functionCardTypes';
 
 export const reducer = (state: IFunctionCardsReducerState, action: IFunctionCardsReducerAction) => {
     const { type, payload } = action;

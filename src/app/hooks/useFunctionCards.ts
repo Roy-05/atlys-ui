@@ -1,7 +1,7 @@
 import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
 import { FunctionList } from '@/app/modules/LinkedList';
 import { reducer } from '@/app/reducers/functionCardsReducer';
-import { ChainNode } from '@/types/functionCardTypes';
+import { ChainNode } from '@/app/types/functionCardTypes';
 import { useReducer, useRef } from 'react';
 
 const INITIAL_ORDER = [0, 1, 3, 4, 2];

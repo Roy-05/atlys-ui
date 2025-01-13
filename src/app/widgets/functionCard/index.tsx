@@ -5,9 +5,9 @@ import { H5 } from '@/design-system/typography';
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { validateFunctionInput } from './utils';
 import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
-import { getElementPosition } from '@/utils/utils';
+import { getElementPosition } from '@/app/utils/utils';
 import { ChainingNode } from './ChainingNode';
-import { IFunctionCard } from '@/types/functionCardTypes';
+import { IFunctionCard } from '@/app/types/functionCardTypes';
 
 export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }: IFunctionCard) => {
     const inputNodeRef = useRef<SVGSVGElement>(null);
