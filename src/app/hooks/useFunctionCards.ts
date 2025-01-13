@@ -1,4 +1,3 @@
-import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
 import { FunctionList } from '@/app/modules/LinkedList';
 import { reducer } from '@/app/reducers/functionCardsReducer';
 import { ChainNode } from '@/app/types/functionCardTypes';
@@ -34,12 +33,18 @@ export const useFunctionCards = () => {
     const fnNodeCoords = useRef<Array<ChainNode | undefined>>([]);
     const tertiaryNodeCoords = useRef<Array<ChainNode | undefined>>([]);
 
+    const addNode = () => {
+        dispatch({
+            type: 'ADD_FUNCTION_CARD'
+        });
+    };
+
     const setTertiaryNodeCoords = (value: Array<ChainNode>) => {
         tertiaryNodeCoords.current = value;
 
         if (fnNodeCoords.current?.indexOf(undefined) === -1 && tertiaryNodeCoords.current?.length === 2) {
             dispatch({
-                type: FUNC_CARD_ACTION_TYPES.ADD_CHAIN_PATHS,
+                type: 'ADD_CHAIN_PATHS',
                 payload: {
                     nodes: [tertiaryNodeCoords.current?.[0], ...fnNodeCoords?.current, tertiaryNodeCoords.current?.[1]]
                 }
@@ -54,7 +59,7 @@ export const useFunctionCards = () => {
 
         if (fnNodeCoords.current.indexOf(undefined) === -1 && tertiaryNodeCoords.current.length === 2) {
             dispatch({
-                type: FUNC_CARD_ACTION_TYPES.ADD_CHAIN_PATHS,
+                type: 'ADD_CHAIN_PATHS',
                 payload: {
                     nodes: [tertiaryNodeCoords.current?.[0], ...fnNodeCoords?.current, tertiaryNodeCoords.current?.[1]]
                 }
@@ -66,6 +71,7 @@ export const useFunctionCards = () => {
         state,
         dispatch,
         setFnNodeCoords,
-        setTertiaryNodeCoords
+        setTertiaryNodeCoords,
+        addNode
     };
 };

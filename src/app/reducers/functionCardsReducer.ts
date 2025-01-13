@@ -1,5 +1,4 @@
 import { computeFunctionChain, getPathsForNodes } from '@/app/utils/utils';
-import { FUNC_CARD_ACTION_TYPES } from '../actions/functionCardsActionTypes';
 import { FunctionList } from '../modules/LinkedList';
 import {
     FunctionCardItem,
@@ -8,11 +7,21 @@ import {
 } from '@/app/types/functionCardTypes';
 
 export const reducer = (state: IFunctionCardsReducerState, action: IFunctionCardsReducerAction) => {
-    const { type, payload } = action;
+    const { type, payload = {} } = action;
     const traversalOrder = FunctionList.getTraversalOrder();
 
     switch (type) {
-        case FUNC_CARD_ACTION_TYPES.UPDATE_INITIAL_VALUE: {
+        case 'ADD_FUNCTION_CARD': {
+            FunctionList.append(6);
+
+            const data = [...FunctionList.getNextIndices()].map((index) => ({ eq: '', next: index }));
+
+            return {
+                ...state,
+                data
+            };
+        }
+        case 'UPDATE_INITIAL_VALUE': {
             const { value: initialValue } = payload;
 
             let outputValue = state.outputValue;
@@ -29,7 +38,7 @@ export const reducer = (state: IFunctionCardsReducerState, action: IFunctionCard
                 outputValue
             };
         }
-        case FUNC_CARD_ACTION_TYPES.UPDATE_CARD_EQ: {
+        case 'UPDATE_CARD_EQ': {
             const { index, value } = payload;
 
             const newData = [...state?.data];
@@ -52,7 +61,7 @@ export const reducer = (state: IFunctionCardsReducerState, action: IFunctionCard
                 data: newData
             };
         }
-        case FUNC_CARD_ACTION_TYPES.ADD_CHAIN_PATHS: {
+        case 'ADD_CHAIN_PATHS': {
             const { nodes } = payload;
 
             let chainPaths = getPathsForNodes({

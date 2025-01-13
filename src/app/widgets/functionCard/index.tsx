@@ -4,7 +4,6 @@ import { XStack, YStack } from '@/design-system/layout';
 import { H5 } from '@/design-system/typography';
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { validateFunctionInput } from './utils';
-import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
 import { getElementPosition } from '@/app/utils/utils';
 import { ChainingNode } from './ChainingNode';
 import { IFunctionCard } from '@/app/types/functionCardTypes';
@@ -18,7 +17,7 @@ export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }: IFuncti
 
         if (isValid) {
             dispatch({
-                type: FUNC_CARD_ACTION_TYPES.UPDATE_CARD_EQ,
+                type: 'UPDATE_CARD_EQ',
                 payload: {
                     index,
                     value

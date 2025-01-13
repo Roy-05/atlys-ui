@@ -99,8 +99,8 @@ export const getPathsForNodes = ({
         const currentIndex = traversalOrder[i];
         const nextIndex = traversalOrder[i + 1];
 
-        const start = nodes[currentIndex].outNode;
-        const end = nodes[nextIndex].inNode;
+        const start = nodes[currentIndex]?.outNode;
+        const end = nodes[nextIndex]?.inNode;
 
         if (start && end) {
             const path = generateCurvedPath(start, end);

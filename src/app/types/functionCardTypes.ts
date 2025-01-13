@@ -1,4 +1,3 @@
-import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/functionCardsActionTypes';
 import { ActionDispatch } from 'react';
 
 export type Coords = [number, number];
@@ -21,8 +20,8 @@ export interface IFunctionCardsReducerState {
 }
 
 export interface IFunctionCardsReducerAction {
-    type: keyof typeof FUNC_CARD_ACTION_TYPES;
-    payload: Record<string, string | any>;
+    type: 'ADD_FUNCTION_CARD' | 'ADD_CHAIN_PATHS' | 'UPDATE_INITIAL_VALUE' | 'UPDATE_CARD_EQ';
+    payload?: Record<string, string | any>;
 }
 
 export interface IFunctionCard {

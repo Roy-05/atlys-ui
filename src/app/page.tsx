@@ -9,10 +9,9 @@ import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
 import { useEffect, useRef } from 'react';
 import { getElementPosition } from '@/app/utils/utils';
-import { FUNC_CARD_ACTION_TYPES } from './actions/functionCardsActionTypes';
 
 export default function Home() {
-    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunctionCards();
+    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords, addNode } = useFunctionCards();
     const { outputValue } = state;
 
     const inputNodeRef = useRef<SVGSVGElement>(null);
@@ -20,7 +19,7 @@ export default function Home() {
 
     const _updateInitialValue = (evt: React.FocusEvent<HTMLInputElement>) => {
         dispatch({
-            type: FUNC_CARD_ACTION_TYPES.UPDATE_INITIAL_VALUE,
+            type: 'UPDATE_INITIAL_VALUE',
             payload: { value: evt.target.value }
         });
     };
