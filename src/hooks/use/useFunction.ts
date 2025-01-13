@@ -3,7 +3,8 @@ import { ActionDispatch, useReducer } from 'react';
 
 export const ACTION_TYPES = Object.freeze({
     UPDATE_INITIAL_VALUE: 'UPDATE_INITIAL_VALUE',
-    UPDATE_CARD_EQ: 'UPDATE_CARD_EQ'
+    UPDATE_CARD_EQ: 'UPDATE_CARD_EQ',
+    ADD_CARD_POS: 'ADD_CARD_POS'
 });
 
 const reducer = (state, action) => {
@@ -12,7 +13,7 @@ const reducer = (state, action) => {
         case ACTION_TYPES.UPDATE_INITIAL_VALUE: {
             const { value: initialValue } = payload;
 
-            let traverseOrder = FunctionList.display();
+            let traverseOrder = FunctionList.getTraversalOrder();
 
             let outputValue = state.outputValue;
 
@@ -26,13 +27,13 @@ const reducer = (state, action) => {
                 outputValue
             };
         }
-        case ACTION_TYPES.UPDATE_CARD_EQ:
+        case ACTION_TYPES.UPDATE_CARD_EQ: {
             const { index, value } = payload;
             // console.log(index, value);
             const newData = [...state?.data];
             newData[index] = value;
 
-            let traverseOrder = FunctionList.display();
+            const traverseOrder = FunctionList.getTraversalOrder();
 
             let outputValue = state.outputValue;
 
@@ -47,23 +48,77 @@ const reducer = (state, action) => {
                 outputValue,
                 data: newData
             };
+        }
+        case ACTION_TYPES.ADD_CARD_POS: {
+            const { index, value } = payload;
+
+            let cardPos = [...state.cardPos];
+            cardPos[index] = value;
+
+            const traversalOrder = FunctionList.getTraversalOrder();
+            let linePaths = [];
+
+            if (cardPos.indexOf(undefined) === -1) {
+                linePaths = generateCurvedPaths({ traversalOrder, cardPos });
+            }
+
+            console.log(traversalOrder, linePaths, cardPos);
+
+            return {
+                ...state,
+                cardPos,
+                linePaths
+            };
+        }
         default:
             return state;
     }
 };
 
 const init = () => {
-    FunctionList.append(0);
-    FunctionList.append(1);
-    FunctionList.append(3);
-    FunctionList.append(4);
-    FunctionList.append(2);
+    FunctionList.init([0, 1, 3, 4, 2]);
 
     return {
         initialValue: 0,
         outputValue: 0,
+        cardPos: [...new Array(5)],
+        linePaths: [],
         data: [...new Array(5)]
     };
+};
+
+const updatedLinePaths = ({ traversalOrder, cardPos }) => {
+    return traversalOrder.map((currentIndex, idx) => {
+        const nextIndex = traversalOrder[idx + 1]; // Get the next index in the traversal order
+        return {
+            in: cardPos[currentIndex].out,
+            out: nextIndex !== undefined ? cardPos[nextIndex].in : null // If there's no next index, set end to null
+        };
+    });
+};
+
+const generateCurvedPaths = ({ traversalOrder, cardPos }) => {
+    return traversalOrder
+        .map((currentIndex, idx) => {
+            const nextIndex = traversalOrder[idx + 1];
+            const start = cardPos[currentIndex].out;
+            const end = nextIndex !== undefined ? cardPos[nextIndex].in : null;
+
+            if (!end) {
+                return null;
+            }
+
+            // Determine direction: bottom or right
+            const isHorizontal = Math.abs(start[0] - end[0]) >= Math.abs(start[1] - end[1]);
+
+            // Adjust control point based on the direction
+            const controlPoint = isHorizontal
+                ? [(start[0] + end[0]) / 2, start[1] + 40] // Horizontal curve pointing downward
+                : [start[0] + 40, (start[1] + end[1]) / 2]; // Vertical curve pointing right
+
+            return `M ${start[0]} ${start[1]} Q ${controlPoint[0]} ${controlPoint[1]} ${end[0]} ${end[1]}`;
+        })
+        .filter(Boolean);
 };
 
 const compute = ({ traverseOrder, data, initialValue }) => {
@@ -91,6 +146,7 @@ export const useFunction = () => {
         {
             initialValue: 0,
             outputValue: 0,
+            linePaths: [...new Array(5)],
             data: [...new Array(5)]
         },
         init
@@ -102,5 +158,8 @@ export const useFunction = () => {
     const updateInitialValue = ({ payload = {} }: { payload: Record<string, string | number> }) =>
         dispatch({ type: ACTION_TYPES.UPDATE_INITIAL_VALUE, payload });
 
-    return { state, updateCardEquation, updateInitialValue };
+    const addCardPos = ({ payload = {} }: { payload: Record<string, string | number> }) =>
+        dispatch({ type: ACTION_TYPES.ADD_CARD_POS, payload });
+
+    return { state, updateCardEquation, updateInitialValue, addCardPos, dispatch };
 };

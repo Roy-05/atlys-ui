@@ -17,6 +17,15 @@ class LinkedList<T> {
         this.tail = null;
     }
 
+    init(data: T[]) {
+        this.head = null;
+        this.tail = null;
+
+        for (const item of data) {
+            this.append(item);
+        }
+    }
+
     append(data: T) {
         const newNode = new ListNode(data);
 
@@ -32,7 +41,7 @@ class LinkedList<T> {
         }
     }
 
-    display(): Array<T> {
+    getTraversalOrder(): Array<T> {
         let current = this.head;
         let list = [];
 
