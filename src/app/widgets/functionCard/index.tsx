@@ -8,23 +8,24 @@ import { Ref, useEffect, useRef } from 'react';
 import { SvgChainNode } from '../svg/SvgChainNode';
 
 export const FunctionCard = ({ index, updateCardEquation, dispatch }) => {
-    const validateInput = (evt) => {
-        if (!evt.target.value.includes('x')) {
-            console.log('expression does not contain x');
+    const validateInput = ({ value, onError = () => null }) => {
+        if (!value.includes('x')) {
+            onError('Expression does not contain x');
             return;
         }
 
         let regex = new RegExp(VALID_EQ_REG_EXP);
 
-        if (evt.target.value.match(regex)) {
+        if (value.match(regex)) {
+            onError('');
             updateCardEquation({
                 payload: {
                     index,
-                    value: evt.target.value
+                    value
                 }
             });
         } else {
-            console.log('Not a valid expression');
+            onError('Not a valid expression');
         }
     };
 
@@ -64,9 +65,9 @@ export const FunctionCard = ({ index, updateCardEquation, dispatch }) => {
 
     return (
         <Card className='min-w-60 '>
-            <YStack className='gap-y-5 grow'>
+            <YStack className='gap-y-3 grow'>
                 <H5>Function {index + 1}:</H5>
-                <Input onBlur={validateInput} label={'Equation:'} />
+                <Input validate={validateInput} label={'Equation:'} />
                 <Input label={'Next function'} />
                 <XStack className='justify-between mt-6'>
                     <ChainingNode nodeRef={inputNodeRef} text='input' />

@@ -9,6 +9,9 @@ export const colors = {
         100: '#F5F5F5',
         0: '#FFFFFF'
     },
+    error: {
+        100: '#ED4337'
+    },
     decorative: {
         blue: {
             100: '#0066FF',
