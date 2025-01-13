@@ -41,13 +41,12 @@ class LinkedList<T> {
         }
     }
 
-    getNextIndices(): Array[number] {
+    getNextIndices(): Array<T> {
         let current = this.head;
-        let list = [];
+        let list: Array<T> = [];
 
         while (current) {
-            console.log(current);
-            list[current.data] = current.next?.data;
+            list[current.data as number] = current.next?.data;
             current = current.next;
         }
 

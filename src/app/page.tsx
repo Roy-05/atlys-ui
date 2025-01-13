@@ -16,17 +16,17 @@ export default function Home() {
     const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunction();
     const { outputValue } = state;
 
-    const _updateInitialValue = (evt) => {
+    const inputNodeRef = useRef<SVGSVGElement>(null);
+    const outputNodeRef = useRef<SVGSVGElement>(null);
+
+    const _updateInitialValue = (evt: React.FocusEvent<HTMLInputElement>) => {
         dispatch({
             type: FUNC_CARD_ACTION_TYPES.UPDATE_INITIAL_VALUE,
             payload: { value: evt.target.value }
         });
     };
 
-    const inputNodeRef = useRef<SVGSVGElement>(null);
-    const outputNodeRef = useRef<SVGSVGElement>(null);
-
-    const connectElements = () => {
+    const _setTertiaryNodeCoords = () => {
         const inputNode = inputNodeRef.current;
         const outputNode = outputNodeRef.current;
 
@@ -39,12 +39,11 @@ export default function Home() {
     };
 
     useEffect(() => {
-        connectElements();
+        _setTertiaryNodeCoords();
     }, []);
 
-    console.log(state.data);
     return (
-        <XStack className='py-24 px-8 justify-center'>
+        <XStack className='py-24 px-16 justify-center'>
             <XStack className='self-center'>
                 <Input
                     variant={'lg'}
@@ -55,9 +54,8 @@ export default function Home() {
                     TrailingComponent={<SvgChainNode nodeRef={inputNodeRef} />}
                     onBlur={_updateInitialValue}
                 />
-                <XStack className='self-end'></XStack>
             </XStack>
-            <XStack className='flex-wrap justify-around gap-y-20 gap-x-12'>
+            <XStack className='flex-wrap justify-evenly gap-y-12 gap-x-8 mx-4'>
                 {state.data.map((item, index) => (
                     <FunctionCard
                         item={item}
@@ -81,7 +79,8 @@ export default function Home() {
                     className='w-24'
                     LeadingComponent={<SvgChainNode nodeRef={outputNodeRef} />}
                     label={<Chip className='bg-decorative-green-200'>Final Output y</Chip>}
-                    value={outputValue}></Input>
+                    value={outputValue}
+                />
             </XStack>
         </XStack>
     );
