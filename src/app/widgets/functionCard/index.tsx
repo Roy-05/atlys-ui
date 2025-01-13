@@ -52,7 +52,7 @@ export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }: IFuncti
                 <Input validate={validate} label={'Equation:'} />
                 <Input
                     label={'Next function'}
-                    value={Boolean(Number(item?.next) + 1) ? `Function: ${Number(item?.next) || 0 + 1}` : '-'}
+                    value={item?.next !== null ? `Function: ${Number(item?.next) + 1}` : '-'}
                     disabled
                 />
                 <XStack className='justify-between mt-6'>
