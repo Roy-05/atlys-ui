@@ -50,15 +50,16 @@ const reducer = (state, action) => {
             };
         }
         case ACTION_TYPES.ADD_CARD_POS: {
-            const { nodes } = payload;
+            const { fnNodeCoords, tertiaryNodeCoords } = payload;
 
             // let cardPos = [...state.cardPos];
             // cardPos[index] = value;
 
             const traversalOrder = FunctionList.getTraversalOrder();
-            let linePaths = generateCurvedPaths({ traversalOrder, cardPos: nodes });
-
-            // console.log(traversalOrder, linePaths, cardPos);
+            let linePaths = generateCurvedPaths({
+                traversalOrder,
+                nodes: [tertiaryNodeCoords[0], ...fnNodeCoords, tertiaryNodeCoords[1]]
+            });
 
             return {
                 ...state,
@@ -82,40 +83,46 @@ const init = () => {
     };
 };
 
-const generateCurvedPaths = ({ traversalOrder, cardPos }) => {
-    return traversalOrder
-        .map((currentIndex, idx) => {
-            const nextIndex = traversalOrder[idx + 1];
-            const start = cardPos[currentIndex].out;
-            const end = nextIndex !== undefined ? cardPos[nextIndex].in : null;
+const generateCurvedPaths = ({ traversalOrder, nodes }) => {
+    let chainPaths = [];
 
-            if (!end) {
-                return null;
-            }
-            const startX = start[0];
-            const startY = start[1];
-            const endX = end[0];
-            const endY = end[1];
+    // adding a two indexes for entry and exit nodes
+    traversalOrder = [0, ...traversalOrder.map((i) => i + 1), traversalOrder.length + 1];
 
-            // Calculate the midpoint
-            const midpointX = (startX + endX) / 2;
-            const midpointY = (startY + endY) / 2;
+    for (let i = 0; i < nodes.length - 1; i++) {
+        const currentIndex = traversalOrder[i];
+        const nextIndex = traversalOrder[i + 1];
 
-            // Calculate the angle of the line (in radians)
-            const angle = Math.atan2(endY - startY, endX - startX);
+        const start = nodes[currentIndex].outNode;
+        const end = nodes[nextIndex].inNode;
 
-            // Calculate the offset perpendicular to the line at the midpoint (this will control the curve direction)
-            const offsetX = 120 * Math.cos(angle + Math.PI / 2);
-            const offsetY = 80 * Math.sin(angle + Math.PI / 2);
+        const startX = start[0];
+        const startY = start[1];
+        const endX = end[0];
+        const endY = end[1];
 
-            // Adjust the midpoint for the curve height (this makes the curve bend upwards or downwards)
-            const controlX = midpointX + offsetX;
-            const controlY = midpointY + offsetY;
+        // Calculate the midpoint
+        const midpointX = (startX + endX) / 2;
+        const midpointY = (startY + endY) / 2;
 
-            // Construct the path using a quadratic Bézier curve
-            return `M${startX} ${startY} Q${controlX} ${controlY} ${endX} ${endY}`;
-        })
-        .filter(Boolean);
+        // Calculate the angle of the line (in radians)
+        const angle = Math.atan2(endY - startY, endX - startX);
+
+        // Calculate the offset perpendicular to the line at the midpoint (this will control the curve direction)
+        const offsetX = 120 * Math.cos(angle + Math.PI / 2);
+        const offsetY = 80 * Math.sin(angle + Math.PI / 2);
+
+        // Adjust the midpoint for the curve height (this makes the curve bend upwards or downwards)
+        const controlX = midpointX + offsetX;
+        const controlY = midpointY + offsetY;
+
+        // Construct the path using a quadratic Bézier curve
+        chainPaths.push(`M${startX} ${startY} Q${controlX} ${controlY} ${endX} ${endY}`);
+    }
+
+    console.log(chainPaths);
+
+    return chainPaths;
 };
 
 const compute = ({ traverseOrder, data, initialValue }) => {
@@ -150,37 +157,39 @@ export const useFunction = () => {
     const tertiaryNodeCoords = useRef([]);
 
     const setTertiaryNodeCoords = (value) => {
+        console.log(value);
         let _fnNodeCoords = fnNodeCoords.current;
 
         tertiaryNodeCoords.current = value;
 
-        console.log(tertiaryNodeCoords.current);
-
-        // if (_fnNodeCoords.indexOf(undefined) === -1) {
-        //     dispatch({
-        //         type: ACTION_TYPES.ADD_CARD_POS,
-        //         payload: {
-        //             nodes: _fnNodeCoords
-        //         }
-        //     });
-        // }
+        // debugger;
+        if (_fnNodeCoords.indexOf(undefined) === -1 && tertiaryNodeCoords.current.length === 2) {
+            dispatch({
+                type: ACTION_TYPES.ADD_CARD_POS,
+                payload: {
+                    fnNodeCoords: fnNodeCoords.current,
+                    tertiaryNodeCoords: tertiaryNodeCoords.current
+                }
+            });
+        }
     };
 
     const setFnNodeCoords = ({ index, value }) => {
         let _fnNodeCoords = fnNodeCoords.current;
-        let _tertiaryNodeCoords = tertiaryNodeCoords.current;
 
-        _fnNodeCoords[index] = value;
-
+        if (typeof index === 'number') {
+            _fnNodeCoords[index] = value;
+        }
         fnNodeCoords.current = _fnNodeCoords;
 
-        console.log(fnNodeCoords.current);
+        console.log(tertiaryNodeCoords.current);
 
-        if (_fnNodeCoords.indexOf(undefined) === -1) {
+        if (_fnNodeCoords.indexOf(undefined) === -1 && tertiaryNodeCoords.current.length === 2) {
             dispatch({
                 type: ACTION_TYPES.ADD_CARD_POS,
                 payload: {
-                    nodes: _fnNodeCoords
+                    fnNodeCoords: fnNodeCoords.current,
+                    tertiaryNodeCoords: tertiaryNodeCoords.current
                 }
             });
         }

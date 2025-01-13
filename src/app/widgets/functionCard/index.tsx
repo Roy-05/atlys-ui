@@ -5,8 +5,9 @@ import { B4, H5 } from '@/design-system/typography';
 import { Dispatch, Ref, SetStateAction, useEffect, useRef } from 'react';
 import { SvgChainNode } from '../svg/SvgChainNode';
 import { validateFunctionInput } from './utils';
+import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/FunctionCardsActionTypes';
 
-export const FunctionCard = ({ index, updateCardEquation, dispatch }) => {
+export const FunctionCard = ({ index, setFnNodeCoords, dispatch }) => {
     const inputNodeRef = useRef<SVGSVGElement>(null);
     const outputNodeRef = useRef<SVGSVGElement>(null);
 
@@ -14,7 +15,8 @@ export const FunctionCard = ({ index, updateCardEquation, dispatch }) => {
         const isValid = validateFunctionInput({ value, onError });
 
         if (isValid) {
-            updateCardEquation({
+            dispatch({
+                type: FUNC_CARD_ACTION_TYPES.UPDATE_CARD_EQ,
                 payload: {
                     index,
                     value
@@ -36,11 +38,11 @@ export const FunctionCard = ({ index, updateCardEquation, dispatch }) => {
             const x2 = rect2.left + rect2.width / 2;
             const y2 = rect2.top + rect2.height / 2;
 
-            updateCardEquation({
+            setFnNodeCoords({
                 index,
                 value: {
-                    in: [x1, y1],
-                    out: [x2, y2]
+                    inNode: [x1, y1],
+                    outNode: [x2, y2]
                 }
             });
         }

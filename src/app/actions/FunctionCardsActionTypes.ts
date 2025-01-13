@@ -1,4 +1,4 @@
-export const FUNC_CARDS_ACTION_TYPES = Object.freeze({
+export const FUNC_CARD_ACTION_TYPES = Object.freeze({
     UPDATE_INITIAL_VALUE: 'UPDATE_INITIAL_VALUE',
     UPDATE_CARD_EQ: 'UPDATE_CARD_EQ'
 });

@@ -9,7 +9,7 @@ export const validateFunctionInput = ({
     onError: Dispatch<SetStateAction<string>>;
 }) => {
     if (!value.includes('x')) {
-        onError('Expression does not contain x');
+        onError("Expression does not contain 'x'");
         return;
     }
 

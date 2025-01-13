@@ -4,11 +4,12 @@ import { XStack, YStack } from '@/design-system/layout';
 import { FunctionCard } from './widgets/functionCard';
 import { Input } from '@/design-system/input';
 import { SH2 } from '@/design-system/typography';
-import { useFunction } from '@/hooks/use/useFunction';
+import { useFunction } from '@/hooks/useFunction';
 import { SvgChainPath } from './widgets/svg/SvgChainPath';
 import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
 import { useEffect, useRef } from 'react';
+import { getElementPosition } from '@/utils/utils';
 
 export default function Home() {
     const {
@@ -34,21 +35,16 @@ export default function Home() {
         const outputNode = outputNodeRef.current;
 
         if (inputNode && outputNode) {
-            const rect1 = inputNode.getBoundingClientRect();
-            const rect2 = outputNode.getBoundingClientRect();
+            const outNode = getElementPosition({ node: inputNode });
+            const inNode = getElementPosition({ node: outputNode });
 
-            const x1 = rect1.left + rect1.width / 2;
-            const y1 = rect1.top + rect1.height / 2;
-            const x2 = rect2.left + rect2.width / 2;
-            const y2 = rect2.top + rect2.height / 2;
-
-            setTertiaryNodeCoords([{ end: [x1, y1] }, { start: [x2, y2] }]);
+            setTertiaryNodeCoords([{ outNode }, { inNode }]);
         }
     };
 
     useEffect(() => {
         connectElements();
-    });
+    }, []);
 
     return (
         <XStack className='py-24 px-8 justify-center'>
@@ -66,7 +62,7 @@ export default function Home() {
             </XStack>
             <XStack className='flex-wrap justify-around gap-y-20 gap-x-12'>
                 {state.data.map((item, index) => (
-                    <FunctionCard key={index} index={index} updateCardEquation={setFnNodeCoords} dispatch={dispatch} />
+                    <FunctionCard key={index} index={index} setFnNodeCoords={setFnNodeCoords} dispatch={dispatch} />
                 ))}
                 <svg className='absolute top-0 left-0 w-full h-full pointer-events-none'>
                     {state?.linePaths?.map((path, index) => (
