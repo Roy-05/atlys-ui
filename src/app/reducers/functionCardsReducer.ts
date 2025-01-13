@@ -64,7 +64,7 @@ export const reducer = (state: IFunctionCardsReducerState, action: IFunctionCard
         case 'ADD_CHAIN_PATHS': {
             const { nodes } = payload;
 
-            let chainPaths = getPathsForNodes({
+            const chainPaths = getPathsForNodes({
                 traversalOrder,
                 nodes
             });

@@ -43,7 +43,7 @@ class LinkedList<T> {
 
     getNextIndices(): Array<T | null> {
         let current = this.head;
-        let list: Array<T | null> = [];
+        const list: Array<T | null> = [];
 
         while (current) {
             list[current.data as number] = current.next?.data ?? null;
@@ -55,7 +55,7 @@ class LinkedList<T> {
 
     getTraversalOrder(): Array<T> {
         let current = this.head;
-        let list = [];
+        const list = [];
 
         while (current) {
             list.push(current.data);

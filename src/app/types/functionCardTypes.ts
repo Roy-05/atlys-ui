@@ -21,7 +21,8 @@ export interface IFunctionCardsReducerState {
 
 export interface IFunctionCardsReducerAction {
     type: 'ADD_FUNCTION_CARD' | 'ADD_CHAIN_PATHS' | 'UPDATE_INITIAL_VALUE' | 'UPDATE_CARD_EQ';
-    payload?: Record<string, string | any>;
+    // "@ts-expect-error"
+    payload?: Record<string, any>;
 }
 
 export interface IFunctionCard {

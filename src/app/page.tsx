@@ -11,7 +11,7 @@ import { useEffect, useRef } from 'react';
 import { getElementPosition } from '@/app/utils/utils';
 
 export default function Home() {
-    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords, addNode } = useFunctionCards();
+    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunctionCards();
     const { outputValue } = state;
 
     const inputNodeRef = useRef<SVGSVGElement>(null);

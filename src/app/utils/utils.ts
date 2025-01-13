@@ -90,7 +90,7 @@ export const getPathsForNodes = ({
     traversalOrder: Array<number>;
     nodes: Array<ChainNode>;
 }) => {
-    let chainPaths = [];
+    const chainPaths = [];
 
     // adding two indexes for entry and exit nodes
     traversalOrder = [0, ...traversalOrder.map((i: number) => i + 1), traversalOrder.length + 1];

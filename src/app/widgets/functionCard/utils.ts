@@ -13,7 +13,7 @@ export const validateFunctionInput = ({
         return;
     }
 
-    let regex = new RegExp(VALID_EQ_REG_EXP);
+    const regex = new RegExp(VALID_EQ_REG_EXP);
 
     if (value.match(regex)) {
         onError('');

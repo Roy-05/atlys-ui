@@ -35,7 +35,6 @@ export const Input = ({
     LeadingComponent = null,
     TrailingComponent = null,
     validate = () => true,
-    children,
     onBlur,
     ...props
 }: Input & JSX.IntrinsicElements['input']) => {
