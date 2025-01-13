@@ -7,7 +7,7 @@ import { SvgChainNode } from '../svg/SvgChainNode';
 import { validateFunctionInput } from './utils';
 import { FUNC_CARD_ACTION_TYPES } from '@/app/actions/FunctionCardsActionTypes';
 
-export const FunctionCard = ({ index, setFnNodeCoords, dispatch }) => {
+export const FunctionCard = ({ item, index, setFnNodeCoords, dispatch }) => {
     const inputNodeRef = useRef<SVGSVGElement>(null);
     const outputNodeRef = useRef<SVGSVGElement>(null);
 
@@ -57,7 +57,11 @@ export const FunctionCard = ({ index, setFnNodeCoords, dispatch }) => {
             <YStack className='gap-y-3 grow'>
                 <H5>Function {index + 1}:</H5>
                 <Input validate={validate} label={'Equation:'} />
-                <Input label={'Next function'} />
+                <Input
+                    label={'Next function'}
+                    value={item?.next + 1 <= 5 ? `Function: ${item?.next + 1}` : '-'}
+                    disabled
+                />
                 <XStack className='justify-between mt-6'>
                     <ChainingNode nodeRef={inputNodeRef} text='input' />
                     <ChainingNode nodeRef={outputNodeRef} text='output' className={'flex-row-reverse'} />

@@ -76,7 +76,7 @@ export const Input = ({
                 )}
 
                 <input
-                    className={`grow focus:outline-none text-neutral-700 h-full ${
+                    className={`grow focus:outline-none text-neutral-700 disabled:text-neutral-500 h-full ${
                         variant === 'lg'
                             ? 'text-lg leading-5 font-bold py-3 px-4 rounded-xl border-2'
                             : 'text-xs leading-3 font-medium px-3 py-2  rounded-lg border'

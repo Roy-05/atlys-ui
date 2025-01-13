@@ -10,21 +10,17 @@ import { Chip } from '@/design-system/chip';
 import { SvgChainNode } from './widgets/svg/SvgChainNode';
 import { useEffect, useRef } from 'react';
 import { getElementPosition } from '@/utils/utils';
+import { FUNC_CARD_ACTION_TYPES } from './actions/FunctionCardsActionTypes';
 
 export default function Home() {
-    const {
-        state,
-        updateCardEquation,
-        updateInitialValue,
-        addCardPos,
-        dispatch,
-        setFnNodeCoords,
-        setTertiaryNodeCoords
-    } = useFunction();
+    const { state, dispatch, setFnNodeCoords, setTertiaryNodeCoords } = useFunction();
     const { outputValue } = state;
 
     const _updateInitialValue = (evt) => {
-        updateInitialValue({ payload: { value: evt.target.value } });
+        dispatch({
+            type: FUNC_CARD_ACTION_TYPES.UPDATE_INITIAL_VALUE,
+            payload: { value: evt.target.value }
+        });
     };
 
     const inputNodeRef = useRef<SVGSVGElement>(null);
@@ -46,6 +42,7 @@ export default function Home() {
         connectElements();
     }, []);
 
+    console.log(state.data);
     return (
         <XStack className='py-24 px-8 justify-center'>
             <XStack className='self-center'>
@@ -62,17 +59,23 @@ export default function Home() {
             </XStack>
             <XStack className='flex-wrap justify-around gap-y-20 gap-x-12'>
                 {state.data.map((item, index) => (
-                    <FunctionCard key={index} index={index} setFnNodeCoords={setFnNodeCoords} dispatch={dispatch} />
+                    <FunctionCard
+                        item={item}
+                        key={index}
+                        index={index}
+                        setFnNodeCoords={setFnNodeCoords}
+                        dispatch={dispatch}
+                    />
                 ))}
                 <svg className='absolute top-0 left-0 w-full h-full pointer-events-none'>
-                    {state?.linePaths?.map((path, index) => (
+                    {state?.chainPaths?.map((path, index) => (
                         <SvgChainPath key={index} d={path} />
                     ))}
                 </svg>
             </XStack>
             <XStack className='self-center'>
                 <Input
-                    disabled
+                    readOnly
                     variant={'lg'}
                     color={'green'}
                     className='w-24'

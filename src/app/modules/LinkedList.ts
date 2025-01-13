@@ -41,6 +41,19 @@ class LinkedList<T> {
         }
     }
 
+    getNextIndices(): Array[number] {
+        let current = this.head;
+        let list = [];
+
+        while (current) {
+            console.log(current);
+            list[current.data] = current.next?.data;
+            current = current.next;
+        }
+
+        return list;
+    }
+
     getTraversalOrder(): Array<T> {
         let current = this.head;
         let list = [];
