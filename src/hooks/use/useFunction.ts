@@ -92,16 +92,28 @@ const generateCurvedPaths = ({ traversalOrder, cardPos }) => {
             if (!end) {
                 return null;
             }
+            const startX = start[0];
+            const startY = start[1];
+            const endX = end[0];
+            const endY = end[1];
 
-            // Determine direction: bottom or right
-            const isHorizontal = Math.abs(start[0] - end[0]) >= Math.abs(start[1] - end[1]);
+            // Calculate the midpoint
+            const midpointX = (startX + endX) / 2;
+            const midpointY = (startY + endY) / 2;
 
-            // Adjust control point based on the direction
-            const controlPoint = isHorizontal
-                ? [(start[0] + end[0]) / 2, start[1] + 40] // Horizontal curve pointing downward
-                : [start[0] + 40, (start[1] + end[1]) / 2]; // Vertical curve pointing right
+            // Calculate the angle of the line (in radians)
+            const angle = Math.atan2(endY - startY, endX - startX);
 
-            return `M ${start[0]} ${start[1]} Q ${controlPoint[0]} ${controlPoint[1]} ${end[0]} ${end[1]}`;
+            // Calculate the offset perpendicular to the line at the midpoint (this will control the curve direction)
+            const offsetX = 120 * Math.cos(angle + Math.PI / 2);
+            const offsetY = 80 * Math.sin(angle + Math.PI / 2);
+
+            // Adjust the midpoint for the curve height (this makes the curve bend upwards or downwards)
+            const controlX = midpointX + offsetX;
+            const controlY = midpointY + offsetY;
+
+            // Construct the path using a quadratic Bézier curve
+            return `M${startX} ${startY} Q${controlX} ${controlY} ${endX} ${endY}`;
         })
         .filter(Boolean);
 };
